@@ -1,11 +1,12 @@
 import { Queue } from 'bullmq';
+import IORedis from 'ioredis';
 
 export const QUEUE_NAME = 'reporting_queue';
 
-const connection = {
+const connection = new IORedis({
     host: 'localhost',
     port: 6379,
-};
+});
 
 let queue = null;
 
