@@ -1,0 +1,19 @@
+{
+  "name": "fastify-bullmq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start:redis": "docker-compose up -d"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bullmq": "^5.63.0",
+    "fastify": "^5.6.1",
+    "ioredis": "^5.8.2"
+  },
+  "type": "module"
+}
