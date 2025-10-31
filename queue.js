@@ -34,3 +34,5 @@ const configureQueue = async (queue) => {
 }
 
 const setRateLimit = async (queue, maxJobs, duration) => {
+    await queue.setGlobalRateLimit(RATE_LIMIT_MAX_JOBS, RATE_LIMIT_DURATION);
+}
