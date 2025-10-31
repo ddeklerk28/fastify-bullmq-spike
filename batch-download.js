@@ -1,10 +1,12 @@
 import { getQueueInstance } from "./queue.js";
 
-const batchDownload = async (payloads) => {
+const bulkAddJobs = async (payloads) => {
     const queue = getQueueInstance();
 
-    for (const payload of payloads) {
-        const index = payloads.indexOf(payload);
-        await queue.add(`batch-download-job-${index}`, payload);
-    }
+    const jobs = payloads.map((payload, index) => ({
+        name: `batch-download-job-${index}`,
+        data: payload
+    }));
+
+    await queue.add(jobs);
 }
