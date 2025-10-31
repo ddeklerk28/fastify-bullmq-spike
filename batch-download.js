@@ -1,6 +1,12 @@
 import { getQueueInstance } from "./queue.js";
 
-const bulkAddJobs = async (payloads, keyExtractor) => {
+const addJob = async (payload, key) => {
+    const queue = getQueueInstance();
+
+    await queue.add(key, payload);
+}
+
+const addJobs = async (payloads, keyExtractor) => {
     const queue = getQueueInstance();
 
     const jobs = payloads.map((payload, index) => {
