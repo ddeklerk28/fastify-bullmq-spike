@@ -20,3 +20,9 @@ const addJobs = async (payloads, keyExtractor) => {
 
     await queue.add(jobs);
 }
+
+const removeJobs = async () => {
+    const queue = getQueueInstance();
+
+    await queue.obliterate();
+}
