@@ -1,23 +1,49 @@
 import Fastify from 'fastify';
-import { Queue } from 'bullmq';
+import { addJob } from './queue-server.js';
+import { initWorker } from "./worker-service.js";
+import { QueueEvents } from "bullmq";
+import { QUEUE_NAME } from "./queue.js";
+import IORedis from 'ioredis';
 
-const QUEUE_NAME = 'my_queue';
-const redisConnection = {
+const connection = new IORedis({
 	host: 'localhost',
-	port: 6379
-}
+	port: 6379,
+	maxRetriesPerRequest: null,
+});
 
-const queue = new Queue(QUEUE_NAME, { connection: redisConnection});
+const queueEvents = new QueueEvents(QUEUE_NAME, { connection });
+
+queueEvents.on('completed', ({ jobId, returnvalue }) => {
+	console.log(`[QueueEvents] Job ${jobId} completed with return value:`, returnvalue);
+});
+
+// Define the job processor
+const processor = async (job) => {
+	console.log(`[Worker] Processing job ${job.id} of type ${job.name}`);
+	console.log(`[Worker] Job data:`, job.data);
+
+	// Simulate some work
+	await new Promise(resolve => setTimeout(resolve, 1000));
+
+	return { success: true, processedAt: new Date().toISOString() };
+};
+
+// Initialize worker when server starts
+initWorker(processor);
+console.log('Worker initialized and listening for jobs...');
 
 const fastify = Fastify();
 
 fastify.get('/', async (req, res) => {
 	console.log('Request received');
 
-	console.log('Enqueuing job...');
-	await queue.add('my-job', {});
+	console.log('Adding job to queue...');
 
-	return { message: 'hello world' };
+	await addJob({ data: 'test' }, 'test_job', 'unique-id-1');
+
+	console.log('Job added successfully!');
+
+	return { message: 'Job added to queue' };
 });
 
 fastify.listen({ port: 3000 }, (_, address) => {
