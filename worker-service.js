@@ -1,6 +1,6 @@
 import { getWorkerInstance } from './worker.js';
 
-const initWorker = (processor) => {
+export const initWorker = (processor) => {
     const worker = getWorkerInstance(processor);
 
     worker.on('complete', handleJobCompletion);
