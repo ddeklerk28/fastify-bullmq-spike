@@ -1,6 +1,6 @@
 import { Queue } from 'bullmq';
 import IORedis from 'ioredis';
-import { QUEUE_NAME } from './queue.js';
+import { QUEUE_NAME } from './messaging/queue/queue.js';
 
 const connection = new IORedis({
     host: 'localhost',

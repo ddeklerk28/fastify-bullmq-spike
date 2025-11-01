@@ -1,9 +1,9 @@
 import Fastify from 'fastify';
-import { addJob } from './queue-server.js';
-import { initWorker } from "./worker-service.js";
-import { QueueEvents } from "bullmq";
-import { QUEUE_NAME } from "./queue.js";
 import IORedis from 'ioredis';
+import { QueueEvents } from "bullmq";
+
+import { addJob, QUEUE_NAME } from './messaging/queue/index.js';
+import { initWorker } from "./messaging/worker/index.js";
 
 const connection = new IORedis({
 	host: 'localhost',

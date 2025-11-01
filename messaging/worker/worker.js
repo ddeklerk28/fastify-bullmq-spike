@@ -1,5 +1,5 @@
 import { Worker } from 'bullmq';
-import { QUEUE_NAME } from "./queue.js";
+import { QUEUE_NAME } from "../queue/queue.js";
 import IORedis from "ioredis";
 
 const connection = new IORedis({
