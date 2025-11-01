@@ -35,15 +35,11 @@ console.log('Worker initialized and listening for jobs...');
 const fastify = Fastify();
 
 fastify.get('/', async (req, res) => {
-	console.log('Request received');
+	console.log('Request for \'\/\' route received');
 
-	console.log('Adding job to queue...');
+	await addJob({ data: 'test' }, 'test_job', 'unique-id-2');
 
-	await addJob({ data: 'test' }, 'test_job', 'unique-id-1');
-
-	console.log('Job added successfully!');
-
-	return { message: 'Job added to queue' };
+	return { message: 'Response from \'\/\'' };
 });
 
 fastify.listen({ port: 3000 }, (_, address) => {

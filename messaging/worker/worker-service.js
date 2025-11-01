@@ -3,7 +3,7 @@ import { getWorkerInstance } from './worker.js';
 export const initWorker = (processor) => {
     const worker = getWorkerInstance(processor);
 
-    worker.on('complete', handleJobCompletion);
+    worker.on('completed', handleJobCompletion);
 
     worker.on('progress', handleJobProgress);
 }
