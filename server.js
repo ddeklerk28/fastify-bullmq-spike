@@ -11,11 +11,11 @@ const connection = new IORedis({
 	maxRetriesPerRequest: null,
 });
 
-const queueEvents = new QueueEvents(QUEUE_NAME, { connection });
-
-queueEvents.on('completed', ({ jobId, returnvalue }) => {
-	console.log(`[QueueEvents] Job ${jobId} completed with return value:`, returnvalue);
-});
+// const queueEvents = new QueueEvents(QUEUE_NAME, { connection });
+//
+// queueEvents.on('completed', ({ jobId, returnvalue }) => {
+// 	console.log(`[QueueEvents] Job ${jobId} completed with return value:`, returnvalue);
+// });
 
 // Define the job processor
 const processor = async (job) => {
@@ -30,7 +30,6 @@ const processor = async (job) => {
 
 // Initialize worker when server starts
 initWorker(processor);
-console.log('Worker initialized and listening for jobs...');
 
 const fastify = Fastify();
 
