@@ -1,20 +1,21 @@
 import { getQueueInstance } from "./queue.js";
 
-const addJob = async (payload, key) => {
+const addJob = async (payload, name, jobId = 'job') => {
     const queue = getQueueInstance();
 
-    await queue.add(key, payload);
+    await queue.add(key, payload, { jobId });
 }
 
-const addJobs = async (payloads, keyExtractor) => {
+const addJobs = async (payloads, name, jobIdExtractor) => {
     const queue = getQueueInstance();
 
     const jobs = payloads.map((payload, index) => {
-        const key = keyExtractor ? keyExtractor(payload, index) : `job-${index}`;
+        const jobId = jobIdExtractor ? jobIdExtractor(payload, name, index) : `job-${index}`;
 
         return ({
-            name: key,
-            data: payload
+            name,
+            data: payload,
+            opts: { jobId }
          })
     });
 
