@@ -17,12 +17,6 @@ jobTracker.on('batch:complete', (batchInfo) => {
     console.log(`Successful: ${batchInfo.completed}`);
     console.log(`Failed: ${batchInfo.failed}`);
     console.log('========================================\n');
-
-    // Here you could:
-    // - Send a notification
-    // - Update a database
-    // - Trigger another workflow
-    // - Emit a websocket event
 });
 
 const concepts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -30,26 +24,20 @@ const concepts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const fastify = Fastify();
 
 fastify.get('/', async (req, res) => {
-    console.log('Request for \'/\' route received');
-
-    // Generate a unique batch ID
     const batchId = randomUUID();
 
-    // Start tracking the batch
     jobTracker.startBatch(batchId, concepts.length);
 
-    // Add jobs with the batch ID
-    const result = await addJobs(
+    await addJobs(
         concepts,
         'generate_report',
         (payload, name, index) => `${name}-${payload}-job`,
-        batchId  // Pass the batch ID
+        (payload) => ({ payload, batchId })
     );
 
     return {
         message: 'Jobs added to queue',
         batchId: batchId,
-        jobCount: result.count
     };
 });
 
