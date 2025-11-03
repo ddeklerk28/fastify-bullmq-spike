@@ -16,7 +16,7 @@ export const getWorkerInstance = (processor) => {
 
         const _processor = processor || defaultProcessor;
 
-        worker = new Worker(QUEUE_NAME, _processor, { connection });
+        worker = new Worker(QUEUE_NAME, _processor, { connection, removeOnComplete: { count: 0 }, removeOnFail: { count: 0} });
     }
 
     return worker;
