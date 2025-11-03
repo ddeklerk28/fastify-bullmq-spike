@@ -1,8 +1,10 @@
 export const generateReport = async (job) => {
-    console.log(`Generating report for job ${job.id} with data:`, job.data);
+    console.log(`[GenerateReport] Starting report generation for job ${job.id} with data:`, job.data);
 
     // Simulate report generation
-    new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    console.log(`[GenerateReport] Finished processing job ${job.id}`);
 
     return { reportId: `report-${job.id}`, status: 'completed' };
 }

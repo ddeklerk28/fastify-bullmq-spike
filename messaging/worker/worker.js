@@ -11,11 +11,12 @@ const connection = new IORedis({
 let worker = null
 
 const defaultProcessor = (job) => {
-    console.log(`Processing job ${job.id} of type ${job.name}`);
+    console.log(`[Worker] Processing job ${job.id} of type ${job.name}`);
 }
 
 export const getWorkerInstance = (processor) => {
     if (!worker) {
+        console.log(`[Worker] Creating new worker for queue '${QUEUE_NAME}'`);
 
         const _processor = processor || defaultProcessor;
 

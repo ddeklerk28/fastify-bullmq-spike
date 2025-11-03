@@ -1,14 +1,14 @@
 import Fastify from 'fastify';
 import IORedis from 'ioredis';
 
-import { addJob, addJobs } from './messaging/queue/index.js';
+import { addJobs } from './messaging/queue/index.js';
 import { initWorker } from "./messaging/worker/index.js";
-import { generateReport as processor } from "./messaging/processors/index.js";
+import { rootProcessor } from "./messaging/processors/index.js";
 
 // Initialize worker when server starts
-initWorker(processor);
+initWorker(rootProcessor);
 
-const concepts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const concepts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12, 13, 14];
 
 const fastify = Fastify();
 
@@ -20,7 +20,6 @@ fastify.get('/', async (req, res) => {
         'generate_report',
         (payload, name, index) => `${name}-${payload}-job`
     );
-	// await addJob({ data: 'test' }, 'test_job', 'unique-id-2');
 
 	return { message: 'Response from \'\/\'' };
 });
