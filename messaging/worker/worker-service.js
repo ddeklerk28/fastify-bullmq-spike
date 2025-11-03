@@ -1,5 +1,5 @@
 import { getWorkerInstance } from './worker.js';
-import { jobTracker } from './job-tracker.js';
+import { jobTracker } from '../tracker/index.js';
 
 export const initWorker = (processor) => {
     const worker = getWorkerInstance(processor);

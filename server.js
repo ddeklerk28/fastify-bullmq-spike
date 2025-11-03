@@ -1,9 +1,12 @@
 import Fastify from 'fastify';
 import { randomUUID } from 'crypto';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
 
 import { addJobs } from './messaging/queue/index.js';
-import { initWorker, jobTracker } from "./messaging/worker/index.js";
+import { initWorker } from "./messaging/worker/index.js";
 import { rootProcessor } from "./messaging/processors/index.js";
+import { jobTracker } from './messaging/tracker/index.js';
 
 // Initialize worker when server starts
 initWorker(rootProcessor);
@@ -21,6 +24,11 @@ fastify.get('/', async (req, res) => {
     const batchId = randomUUID();
     jobTracker.startBatch(batchId, concepts.length);
 
+    // Create tmp folder for this batch
+    const tmpDir = join(process.cwd(), `tmp-${batchId}`);
+    await mkdir(tmpDir, { recursive: true });
+    console.log(`[Server] Created directory: ${tmpDir}`);
+
     await addJobs(
         concepts,
         'generate_report',
@@ -28,7 +36,7 @@ fastify.get('/', async (req, res) => {
         (payload) => ({ payload, batchId })
     );
 
-	return { message: `batch with id: '${batch}' created` };
+	return { message: `batch with id: '${batchId}' created` };
 });
 
 fastify.get('/batch/:id/status', async (req, res) => {
