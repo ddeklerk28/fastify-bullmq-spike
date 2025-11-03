@@ -7,22 +7,32 @@ export const addJob = async (payload, name, jobId = 'job') => {
     await queue.add(name, payload, { jobId });
 }
 
-export const addJobs = async (payloads, name, jobIdExtractor) => {
+export const addJobs = async (payloads, name, jobIdExtractor, batchId = null) => {
     const queue = await getQueueInstance();
 
     const jobs = payloads.map((payload, index) => {
         const jobId = jobIdExtractor ? jobIdExtractor(payload, name, index) : `job-${index}`;
 
         console.log(`[QueueService] Preparing job type ${name} with jobId ${jobId}`);
+
+        // Add batchId to job data if provided
+        const jobData = batchId ? { ...payload, _batchId: batchId } : payload;
+
         return ({
             name,
-            data: payload,
+            data: jobData,
             opts: { jobId }
          })
     });
 
     console.log(`[QueueService] Adding ${jobs.length} jobs to queue...`);
-    return await queue.addBulk(jobs);
+    const result = await queue.addBulk(jobs);
+
+    return {
+        jobs: result,
+        batchId,
+        count: jobs.length
+    };
 }
 
 export const removeJobs = async () => {

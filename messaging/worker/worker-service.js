@@ -1,4 +1,5 @@
 import { getWorkerInstance } from './worker.js';
+import { jobTracker } from './job-tracker.js';
 
 export const initWorker = (processor) => {
     const worker = getWorkerInstance(processor);
@@ -8,6 +9,8 @@ export const initWorker = (processor) => {
     worker.on('progress', handleJobProgress);
     worker.on('failed', handleJobFailure);
     worker.on('error', handleWorkerError);
+
+    return worker;
 }
 
 const handleJobActive = (job) => {
@@ -16,6 +19,12 @@ const handleJobActive = (job) => {
 
 const handleJobCompletion = (job, returnValue) => {
     console.log(`[Worker] Job ${job.id} has been completed with:`, returnValue);
+
+    // Track batch completion if job has batchId
+    const batchId = job.data._batchId;
+    if (batchId) {
+        jobTracker.recordCompletion(batchId);
+    }
 }
 
 const handleJobProgress = (job, progress) => {
@@ -25,6 +34,12 @@ const handleJobProgress = (job, progress) => {
 const handleJobFailure = (job, error) => {
     console.error(`[Worker] Job ${job.id} failed with error:`, error.message);
     console.error('[Worker] Error stack:', error.stack);
+
+    // Track batch failure if job has batchId
+    const batchId = job.data._batchId;
+    if (batchId) {
+        jobTracker.recordFailure(batchId);
+    }
 }
 
 const handleWorkerError = (error) => {
