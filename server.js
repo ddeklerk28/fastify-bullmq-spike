@@ -2,6 +2,10 @@ import Fastify from 'fastify';
 import { randomUUID } from 'crypto';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 import { addJobs } from './messaging/queue/index.js';
 import { initWorker } from "./messaging/worker/index.js";
@@ -12,8 +16,29 @@ import { jobTracker } from './messaging/tracker/index.js';
 initWorker(rootProcessor);
 
 // We fire the completion event to send message to reporting-graphql
-jobTracker.on('batch:complete', (batchInfo) => {
+jobTracker.on('batch:complete', async (batchInfo) => {
     console.log('complete', JSON.stringify(batchInfo, null, 2));
+
+    // Archive the batch folder
+    const batchId = batchInfo.batchId;
+    const tmpDir = `tmp-${batchId}`;
+    const archiveName = `${tmpDir}.zip`;
+
+    try {
+        console.log(`[Server] Archiving ${tmpDir}...`);
+
+        // Create zip archive
+        await execAsync(`zip -r ${archiveName} ${tmpDir}`);
+
+        console.log(`[Server] Archive created: ${archiveName}`);
+
+        // Optional: Remove the tmp directory after archiving
+        // await execAsync(`rm -rf ${tmpDir}`);
+        // console.log(`[Server] Removed directory: ${tmpDir}`);
+
+    } catch (error) {
+        console.error(`[Server] Failed to archive ${tmpDir}:`, error.message);
+    }
 })
 
 const concepts = [1, 2, 3];
