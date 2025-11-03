@@ -21,7 +21,7 @@ const handleJobCompletion = (job, returnValue) => {
     console.log(`[Worker] Job ${job.id} has been completed with:`, returnValue);
 
     // Track batch completion if job has batchId
-    const batchId = job.data._batchId;
+    const batchId = job.data.batchId;
     if (batchId) {
         jobTracker.recordCompletion(batchId);
     }
@@ -36,7 +36,7 @@ const handleJobFailure = (job, error) => {
     console.error('[Worker] Error stack:', error.stack);
 
     // Track batch failure if job has batchId
-    const batchId = job.data._batchId;
+    const batchId = job.data.batchId;
     if (batchId) {
         jobTracker.recordFailure(batchId);
     }
