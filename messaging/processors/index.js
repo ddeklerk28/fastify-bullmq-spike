@@ -1,2 +1,2 @@
-export * from './generate-report.js';
+export * from './generate-report-processor.js';
 export * from './rootProcessor.js';

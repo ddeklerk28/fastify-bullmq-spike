@@ -1,4 +1,4 @@
-export const generateReport = async (job) => {
+export const generateReportProcessor = async (job) => {
     console.log(`[GenerateReport] Starting report generation for job ${job.id} with data:`, job.data);
 
     // Simulate report generation

@@ -1,9 +1,9 @@
 import { defaultProcessor } from "./default-processor.js";
-import { generateReport } from "./generate-report.js";
+import { generateReportProcessor } from "./generate-report-processor.js";
 
 const processors = new Map([
     ['default_processor', defaultProcessor]
-    ['generate_report', generateReport]
+    ['generate_report', generateReportProcessor]
 ]);
 
 export const rootProcessor = async (job) => {
